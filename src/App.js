@@ -5,40 +5,31 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      users: [],
+      isLoading: false,
+      users: null,
     };
   }
 
-  async getUsersData() {
-    const res = await fetch('https://itrex-react-lab-files.s3.eu-central-1.amazonaws.com/react-test-api.json');
-    const data = await res.json();
-    return data.results;
+  componentDidMount() {
+    const apiUrl = 'https://itrex-react-lab-files.s3.eu-central-1.amazonaws.com/react-test-api.json';
+    this.setState({isLoading: true});
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .then((result) => {
+        this.setState({
+          isLoading: false,
+          users: result,
+        })
+      })
   }
-
-  async componentDidMount() {
-    const users = await this.getUsersData();
-    this.setState({ users });
-  }
-
-
-  
 
   render() {
-    const User = ({ id, firstName }) => (
-      <div>
-        <p>{id}</p>
-        <p>{firstName}</p>
-      </div>
-    );
-    
     return (
       <div>
-        {this.state.users.map((user) => (
-          <User
-            id={user.id}
-            firstName={user.firstName}
-          />
-        ))}
+        <p>Check the 'console'</p>
+        <p>{this.users}</p>
       </div>
     )
   }

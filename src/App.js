@@ -6,7 +6,9 @@ class App extends React.Component {
 
     this.state = {
       isLoading: false,
-      users: null,
+      users: [`s`],
+      title: `HELOO`,
+      list: ['a', 'b'],
     };
   }
 
@@ -20,16 +22,28 @@ class App extends React.Component {
       .then((result) => {
         this.setState({
           isLoading: false,
-          users: result,
+          users: ['result'],
+          list: ['c', 'd'],
         })
       })
   }
 
   render() {
+    const { title } = this.state;
+    const listItems = this.state.list.map((item) => 
+      <li>{item}</li>
+    )
+    const listUsers = this.state.users.map((user) => 
+      <li>{user}</li>
+    )
     return (
       <div>
         <p>Check the 'console'</p>
-        <p>{this.users}</p>
+        <p>
+          {title}
+        </p>
+        <ul>{listItems}</ul>
+        <ul>{listUsers}</ul>
       </div>
     )
   }

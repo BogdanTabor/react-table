@@ -6,7 +6,7 @@ class App extends React.Component {
 
     this.state = {
       isLoading: false,
-      users: [`s`],
+      users: '',
       title: `HELOO`,
       list: ['a', 'b'],
     };
@@ -18,32 +18,35 @@ class App extends React.Component {
 
     fetch(apiUrl)
       .then((response) => response.json())
-      .then((data) => console.log(data))
       .then((result) => {
+        console.log(result);
         this.setState({
           isLoading: false,
-          users: ['result'],
+          users: result.users,
           list: ['c', 'd'],
         })
+        console.log(this.state.users);
       })
   }
 
   render() {
-    const { title } = this.state;
+    const { title, users } = this.state;
     const listItems = this.state.list.map((item) => 
       <li>{item}</li>
     )
-    const listUsers = this.state.users.map((user) => 
-      <li>{user}</li>
-    )
+
     return (
       <div>
         <p>Check the 'console'</p>
-        <p>
-          {title}
-        </p>
+        <p>{title}</p>
         <ul>{listItems}</ul>
-        <ul>{listUsers}</ul>
+        <ul>
+          {this.state.users.map(user => (
+            <li key={user.id}>
+              {user.id}
+            </li>
+          ))}
+        </ul>
       </div>
     )
   }

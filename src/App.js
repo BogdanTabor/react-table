@@ -1,4 +1,5 @@
 import React from "react";
+import "./index.css";
 
 class App extends React.Component {
   constructor(props) {
@@ -25,12 +26,37 @@ class App extends React.Component {
         console.log(this.state.users);
       })
   }
-
+  
   render() {
     const { users } = this.state;
 
     return (
       <div>
+        <table>
+      <caption>Users data</caption>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>State</th>
+        </tr>
+      </thead>
+      <tbody>
+        {users.map(user => (
+          <tr key={user.id}>
+            <td>{user.id}</td>
+            <td>{user.firstName}</td>
+            <td>{user.lastName}</td>
+            <td>{user.email}</td>
+            <td>{user.phone}</td>
+            <td>{user.adress.state}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
         <p>List of users</p>
         <ul>
           {users.map(user => (

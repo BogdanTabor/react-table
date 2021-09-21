@@ -44,29 +44,41 @@ class App extends React.Component {
     })
   }
 
-  sortData() {
-    return (
-      <thead>
-        <tr>
-          <th>
-            <button type="button" onClick={() => this.setState({ sortedField: 'id'})}>
-              id
-            </button>
-          </th>
-          <th>
-            <button type="button" onClick={() => this.setState({ sortedField: 'firstName'})}>
-            First Name
-            </button>
-          </th>
-          <th>
-            <button type="button" onClick={() => this.setState({ sortedField: 'lastName'})}>
-            Last Name
-            </button>
-          </th>
-        </tr>
-      </thead>
-    )    
-  }
+  // sortData() {
+  //   let sortedUsers = [...this.users];
+  //   if (this.sortedField !== null) {
+  //     sortedUsers.sort((a, b) => {
+  //       if (a[this.sortedField] < b[this.sortedField]) {
+  //         return -1;
+  //       }
+  //       if (a[this.sortedField] > b[this.sortedField]) {
+  //         return 1;
+  //       }
+  //       return 0;
+  //     });
+  //   }
+  //   return (
+  //     <thead>
+  //       <tr>
+  //         <th>
+  //           <button type="button" onClick={() => this.setState({ sortedField: 'id'})}>
+  //             id
+  //           </button>
+  //         </th>
+  //         <th>
+  //           <button type="button" onClick={() => this.setState({ sortedField: 'firstName'})}>
+  //           First Name
+  //           </button>
+  //         </th>
+  //         <th>
+  //           <button type="button" onClick={() => this.setState({ sortedField: 'lastName'})}>
+  //           Last Name
+  //           </button>
+  //         </th>
+  //       </tr>
+  //     </thead>
+  //   )    
+  // }
 
 
   render() {
@@ -75,7 +87,7 @@ class App extends React.Component {
     return (
       <table>
         <caption>Users data</caption>
-        {this.sortData()}
+        {/* {this.sortData()} */}
         <thead>
           <tr>
             <th>id</th>

@@ -8,6 +8,7 @@ class App extends React.Component {
     this.state = {
       isLoading: false,
       users: [],
+      sortedField: null,
     };
   }
 
@@ -28,9 +29,9 @@ class App extends React.Component {
   }
 
   renderTableData() {
-    return this.state.users.map(user => {
+    return this.state.users.map(user => { // TODO: fix 'two children with the same key'
       const { id, firstName, lastName, email, phone, adress } = user
-      return (
+      return ( 
         <tr key={id}>
           <td>{id}</td>
           <td>{firstName}</td>
@@ -42,13 +43,39 @@ class App extends React.Component {
       )
     })
   }
-  
+
+  sortData() {
+    return (
+      <thead>
+        <tr>
+          <th>
+            <button type="button" onClick={() => this.setState({ sortedField: 'id'})}>
+              id
+            </button>
+          </th>
+          <th>
+            <button type="button" onClick={() => this.setState({ sortedField: 'firstName'})}>
+            First Name
+            </button>
+          </th>
+          <th>
+            <button type="button" onClick={() => this.setState({ sortedField: 'lastName'})}>
+            Last Name
+            </button>
+          </th>
+        </tr>
+      </thead>
+    )    
+  }
+
+
   render() {
     const { users } = this.state;
 
     return (
       <table>
         <caption>Users data</caption>
+        {this.sortData()}
         <thead>
           <tr>
             <th>id</th>

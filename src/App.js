@@ -27,7 +27,6 @@ class App extends React.Component {
           isLoading: false,
           users: result,
         })
-        console.log(this.state.users);
       })
   }
 
@@ -50,21 +49,18 @@ class App extends React.Component {
   onSort = (column) => (e) => {
     const direction = this.state.sort.column ?
     (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
-    const sortedData = this.state.data.sort((a, b) => {
-      if (column === 'id') {
-        const nameA = a.id.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.id.toUpperCase(); // ignore upper and lowercase
-        if (nameA < nameB) {
+    const sortedData = this.state.users.sort((a, b) => {
+      if (column) { // <=
+        if (a < b) {
           return -1;
         }
-        if (nameA > nameB) {
+        if (a > b) {
           return 1;
         }
-
         // names must be equal
         return 0;
-      } else {
-        return a.firstName - b.firstName;
+      // } else {
+      //   return a.firstName - b.firstName;
       }
     });
       
@@ -83,19 +79,48 @@ class App extends React.Component {
 
   setArrow = (column) => {
     let className = 'sort-direction';
-    
     if (this.state.sort.column === column) {
       className += this.state.sort.direction === 'asc' ? ' asc' : ' desc';
     }
-    
-    console.log(className);
-    
     return className;
   };
   
+  // render() {
+  //   return (
+  //     <table>
+  //       <thead>
+  //         <tr>
+  //           <th onClick={this.onSort('id')}>
+  //             id
+  //             <span className={this.setArrow('id')}></span>
+  //           </th>
+  //           <th onClick={this.onSort('firstName')}>
+  //             First Name
+  //             <span className={this.setArrow('firstName')}></span>
+  //           </th>
+  //         </tr>
+  //       </thead>
+  //       <tbody>
+  //         {this.state.data.map((item, index) => {
+  //           return (
+  //             <tr>
+  //               <td>{item.id}</td>
+  //               <td>{item.firstName}</td>
+  //             </tr>
+  //           );
+  //         })}
+  //       </tbody>
+  //     </table>
+  //   );
+  // }
+
+  
   render() {
+    const { users } = this.state;
+
     return (
       <table>
+        <caption>Users data</caption>
         <thead>
           <tr>
             <th onClick={this.onSort('id')}>
@@ -106,34 +131,6 @@ class App extends React.Component {
               First Name
               <span className={this.setArrow('firstName')}></span>
             </th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.state.data.map((item, index) => {
-            return (
-              <tr>
-                <td>{item.id}</td>
-                <td>{item.firstName}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    );
-  }
-
-  
-  render() {
-    const { users } = this.state;
-
-    return (
-      <table>
-        <caption>Users data</caption>
-        {this.onSort()}
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
             <th>Phone</th>

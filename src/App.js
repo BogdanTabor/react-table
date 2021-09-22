@@ -66,22 +66,11 @@ class App extends React.Component {
     )
   }
 
-  onSort = (column) => (e) => {
-    const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
-    const sortedData = this.state.users.sort((a, b) => {
-      if (column) { // <=
-        if (a < b) {
-          return -1;
-        }
-        if (a > b) {
-          return 1;
-        }
-        // names must be equal
-        return 0;
-      // } else {
-      //   return a.firstName - b.firstName;
-      }
-    });
+  onSort(event, sortKey){
+
+    const data = this.state.data;
+    data.sort((a,b) => a[sortKey].localeCompare(b[sortKey]))
+    this.setState({data})
       
     if (direction === 'desc') {
       sortedData.reverse();

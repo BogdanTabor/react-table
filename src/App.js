@@ -8,7 +8,10 @@ class App extends React.Component {
     this.state = {
       isLoading: false,
       users: [],
-      sortedField: null,
+      sort: {
+        column: null,
+        direction: 'desc',
+      },
     };
   }
 
@@ -44,50 +47,89 @@ class App extends React.Component {
     })
   }
 
-  // sortData() {
-  //   let sortedUsers = [...this.users];
-  //   if (this.sortedField !== null) {
-  //     sortedUsers.sort((a, b) => {
-  //       if (a[this.sortedField] < b[this.sortedField]) {
-  //         return -1;
-  //       }
-  //       if (a[this.sortedField] > b[this.sortedField]) {
-  //         return 1;
-  //       }
-  //       return 0;
-  //     });
-  //   }
-  //   return (
-  //     <thead>
-  //       <tr>
-  //         <th>
-  //           <button type="button" onClick={() => this.setState({ sortedField: 'id'})}>
-  //             id
-  //           </button>
-  //         </th>
-  //         <th>
-  //           <button type="button" onClick={() => this.setState({ sortedField: 'firstName'})}>
-  //           First Name
-  //           </button>
-  //         </th>
-  //         <th>
-  //           <button type="button" onClick={() => this.setState({ sortedField: 'lastName'})}>
-  //           Last Name
-  //           </button>
-  //         </th>
-  //       </tr>
-  //     </thead>
-  //   )    
-  // }
+  onSort = (column) => (e) => {
+    const direction = this.state.sort.column ?
+    (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+    const sortedData = this.state.data.sort((a, b) => {
+      if (column === 'id') {
+        const nameA = a.id.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.id.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
 
+        // names must be equal
+        return 0;
+      } else {
+        return a.firstName - b.firstName;
+      }
+    });
+      
+    if (direction === 'desc') {
+      sortedData.reverse();
+    }
+    
+    this.setState({
+      users: sortedData,
+      sort: {
+        column,
+        direction,
+      }
+    });
+  };
 
+  setArrow = (column) => {
+    let className = 'sort-direction';
+    
+    if (this.state.sort.column === column) {
+      className += this.state.sort.direction === 'asc' ? ' asc' : ' desc';
+    }
+    
+    console.log(className);
+    
+    return className;
+  };
+  
+  render() {
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th onClick={this.onSort('id')}>
+              id
+              <span className={this.setArrow('id')}></span>
+            </th>
+            <th onClick={this.onSort('firstName')}>
+              First Name
+              <span className={this.setArrow('firstName')}></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.data.map((item, index) => {
+            return (
+              <tr>
+                <td>{item.id}</td>
+                <td>{item.firstName}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    );
+  }
+
+  
   render() {
     const { users } = this.state;
 
     return (
       <table>
         <caption>Users data</caption>
-        {/* {this.sortData()} */}
+        {this.onSort()}
         <thead>
           <tr>
             <th>id</th>

@@ -31,7 +31,8 @@ class App extends React.Component {
   }
 
   renderTableData() {
-    return this.state.users.map(user => { // TODO: fix 'two children with the same key'
+    let newUsers = this.state.users;
+    return newUsers.map(user => { // TODO: fix 'two children with the same key'
       const { id, firstName, lastName, email, phone, adress } = user
       return ( 
         <tr key={id}>
@@ -46,9 +47,27 @@ class App extends React.Component {
     })
   }
 
+  renderTableHeader() {
+    return (
+      <tr>
+        <th onClick={this.onSort('id')}>
+          id
+          <span className={this.setArrow('id')}></span>
+        </th>
+        <th onClick={this.onSort('firstName')}>
+          First Name
+          <span className={this.setArrow('firstName')}></span>
+        </th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>State</th>
+      </tr>
+    )
+  }
+
   onSort = (column) => (e) => {
-    const direction = this.state.sort.column ?
-    (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+    const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
     const sortedData = this.state.users.sort((a, b) => {
       if (column) { // <=
         if (a < b) {
@@ -84,58 +103,13 @@ class App extends React.Component {
     }
     return className;
   };
-  
-  // render() {
-  //   return (
-  //     <table>
-  //       <thead>
-  //         <tr>
-  //           <th onClick={this.onSort('id')}>
-  //             id
-  //             <span className={this.setArrow('id')}></span>
-  //           </th>
-  //           <th onClick={this.onSort('firstName')}>
-  //             First Name
-  //             <span className={this.setArrow('firstName')}></span>
-  //           </th>
-  //         </tr>
-  //       </thead>
-  //       <tbody>
-  //         {this.state.data.map((item, index) => {
-  //           return (
-  //             <tr>
-  //               <td>{item.id}</td>
-  //               <td>{item.firstName}</td>
-  //             </tr>
-  //           );
-  //         })}
-  //       </tbody>
-  //     </table>
-  //   );
-  // }
-
-  
+    
   render() {
-    const { users } = this.state;
-
     return (
       <table>
         <caption>Users data</caption>
         <thead>
-          <tr>
-            <th onClick={this.onSort('id')}>
-              id
-              <span className={this.setArrow('id')}></span>
-            </th>
-            <th onClick={this.onSort('firstName')}>
-              First Name
-              <span className={this.setArrow('firstName')}></span>
-            </th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>State</th>
-          </tr>
+          {this.renderTableHeader()}
         </thead>
         <tbody>
           {this.renderTableData()}

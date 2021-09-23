@@ -12,6 +12,7 @@ class App extends React.Component {
         column: null,
         direction: 'desc',
       },
+      sortedField: null,
     };
     this.onSort = this.onSort.bind(this)
   }
@@ -49,11 +50,10 @@ class App extends React.Component {
   }
 
   renderTableHeader() {
-    return ( //TODO: reading 'state' - Cannot read properties of undefined (reading 'localeCompare');
-            //     : reading 'id' - a[sortKey].localeCompare is not a function;
+    return (
       <tr>
-        <th onClick={e => this.onSort(e, 'id')}>id</th>
-        <th onClick={e => this.onSort(e, 'firstName')}>First Name</th>
+        <th onClick={() => this.sortableTable('id')}>id</th>
+        <th onClick={() => this.sortableTable('firstName')}>First Name</th>
         <th onClick={e => this.onSort(e, 'lastName')}>Last Name</th>
         <th onClick={e => this.onSort(e, 'email')}>Email</th>
         <th onClick={e => this.onSort(e, 'phone')}>Phone</th>
@@ -62,13 +62,37 @@ class App extends React.Component {
     )
   }
 
+  //WORKING ASC SORT FUNCTION
   onSort(event, sortKey) {
     const data = this.state.data;
     data.sort((a, b) => a[sortKey].localeCompare(b[sortKey]))
     this.setState({data})
   }
 
-    //the function does not work properly
+  //testing Sortable Table
+  //https://www.smashingmagazine.com/2020/03/sortable-tables-react/
+  //TODO: onClick={() => setSortedField('name')}>
+  //setSortedField must be setState in function?
+  sortableTable(sortedField) {
+    this.setState({sortedField})
+    let sortedData = this.state.data;
+      if (sortedField !== null) {
+        sortedData.sort((a, b) => {
+          if (a[sortedField] < b[sortedField]) {
+            return -1;
+          }
+          if (a[sortedField] > b[sortedField]) {
+            return 1;
+          }
+          return 0;
+      });
+    }
+  }
+
+  //the function does not work properly
+    //FIX: reading 'state' - Cannot read properties of undefined (reading 'localeCompare');
+    //FIX: reading 'id' - a[sortKey].localeCompare is not a function;
+
   // onSort = (column) => (e) => {
   //   const direction = this.state.sort.column ? 
   //     (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';

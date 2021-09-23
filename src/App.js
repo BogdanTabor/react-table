@@ -7,12 +7,13 @@ class App extends React.Component {
 
     this.state = {
       isLoading: false,
-      users: [],
+      data: [],
       sort: {
         column: null,
         direction: 'desc',
       },
     };
+    this.onSort = this.onSort.bind(this)
   }
 
   componentDidMount() {
@@ -25,17 +26,17 @@ class App extends React.Component {
         console.log(result);
         this.setState({
           isLoading: false,
-          users: result,
+          data: result,
         })
       })
   }
 
   renderTableData() {
-    let newUsers = this.state.users;
-    return newUsers.map(user => { // TODO: fix 'two children with the same key'
+    let newdata = this.state.data;
+    return newdata.map(user => { // TODO: fix 'two children with the same key'
       const { id, firstName, lastName, email, phone, adress } = user
-      return ( 
-        <tr key={id}>
+      return (
+        <tr>
           <td>{id}</td>
           <td>{firstName}</td>
           <td>{lastName}</td>
@@ -48,55 +49,28 @@ class App extends React.Component {
   }
 
   renderTableHeader() {
-    return (
+    return ( //TODO: reading 'state' - Cannot read properties of undefined (reading 'localeCompare');
+            //     : reading 'id' - a[sortKey].localeCompare is not a function;
       <tr>
-        <th onClick={this.onSort('id')}>
-          id
-          <span className={this.setArrow('id')}></span>
-        </th>
-        <th onClick={this.onSort('firstName')}>
-          First Name
-          <span className={this.setArrow('firstName')}></span>
-        </th>
-        <th>Last Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>State</th>
+        <th onClick={e => this.onSort(e, 'id')}>id</th>
+        <th onClick={e => this.onSort(e, 'firstName')}>First Name</th>
+        <th onClick={e => this.onSort(e, 'lastName')}>Last Name</th>
+        <th onClick={e => this.onSort(e, 'email')}>Email</th>
+        <th onClick={e => this.onSort(e, 'phone')}>Phone</th>
+        <th onClick={e => this.onSort(e, 'adress.state')}>State</th>
       </tr>
     )
   }
 
-  onSort(event, sortKey){
-
+  onSort(event, sortKey) {
     const data = this.state.data;
-    data.sort((a,b) => a[sortKey].localeCompare(b[sortKey]))
+    data.sort((a, b) => a[sortKey].localeCompare(b[sortKey]))
     this.setState({data})
-      
-    if (direction === 'desc') {
-      sortedData.reverse();
-    }
-    
-    this.setState({
-      users: sortedData,
-      sort: {
-        column,
-        direction,
-      }
-    });
-  };
-
-  setArrow = (column) => {
-    let className = 'sort-direction';
-    if (this.state.sort.column === column) {
-      className += this.state.sort.direction === 'asc' ? ' asc' : ' desc';
-    }
-    return className;
-  };
-    
+  }
+   
   render() {
     return (
       <table>
-        <caption>Users data</caption>
         <thead>
           {this.renderTableHeader()}
         </thead>

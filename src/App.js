@@ -67,6 +67,36 @@ class App extends React.Component {
     data.sort((a, b) => a[sortKey].localeCompare(b[sortKey]))
     this.setState({data})
   }
+
+    //the function does not work properly
+  // onSort = (column) => (e) => {
+  //   const direction = this.state.sort.column ? 
+  //     (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+  //   const sortedData = this.state.data.sort((a, b) => {
+  //       if (column) {
+  //         if (a < b) {
+  //           return -1;
+  //         }
+  //         if (a > b) {
+  //           return 1;
+  //         }
+  //         return 0;
+  //       }
+  //   });
+
+  //   if (direction === 'desc') {
+  //     sortedData.reverse();
+  //   }
+
+  //   this.setState({
+  //     data: sortedData,
+  //     sort: {
+  //       column,
+  //       direction,
+  //     }
+  //   });
+  // };
+
    
   render() {
     return (

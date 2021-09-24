@@ -4,17 +4,11 @@ import "./index.css";
 class App extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isLoading: false,
       data: [],
-      sort: {
-        column: null,
-        direction: 'desc',
-      },
       sortedField: null,
     };
-    this.onSort = this.onSort.bind(this)
   }
 
   componentDidMount() {
@@ -54,16 +48,16 @@ class App extends React.Component {
       <tr>
         <th onClick={() => this.sortableTable('id')}>id</th>
         <th onClick={() => this.sortableTable('firstName')}>First Name</th>
-        <th onClick={e => this.onSort(e, 'lastName')}>Last Name</th>
-        <th onClick={e => this.onSort(e, 'email')}>Email</th>
-        <th onClick={e => this.onSort(e, 'phone')}>Phone</th>
-        <th onClick={e => this.onSort(e, 'adress.state')}>State</th>
+        <th onClick={() => this.onSort('lastName')}>Last Name</th>
+        <th onClick={() => this.onSort('email')}>Email</th>
+        <th onClick={() => this.onSort('phone')}>Phone</th>
+        <th onClick={() => this.sortableTable('adress.state')}>State</th>
       </tr>
     )
   }
 
-  //WORKING ASC SORT FUNCTION
-  onSort(event, sortKey) {
+  //DO NOT WORK ON 'id' and 'adress.state'
+  onSort(sortKey) {
     const data = this.state.data;
     data.sort((a, b) => a[sortKey].localeCompare(b[sortKey]))
     this.setState({data})
@@ -71,8 +65,6 @@ class App extends React.Component {
 
   //testing Sortable Table
   //https://www.smashingmagazine.com/2020/03/sortable-tables-react/
-  //TODO: onClick={() => setSortedField('name')}>
-  //setSortedField must be setState in function?
   sortableTable(sortedField) {
     this.setState({sortedField})
     let sortedData = this.state.data;

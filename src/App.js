@@ -7,8 +7,12 @@ class App extends React.Component {
     this.state = {
       isLoading: false,
       data: [],
-      sortedField: null,
-      sortConfig: null,
+      sortKey: null,
+      sortDirection: null,
+      sortConfig: {
+        key: null,
+        direction: null,
+      },
     };
   }
 
@@ -57,38 +61,50 @@ class App extends React.Component {
     )
   }
 
+  //testing Sortable Table
+  //https://www.smashingmagazine.com/2020/03/sortable-tables-react/
+
+  //<<______________
+  sortableTable(key) {
+    this.setState({sortKey: key})
+
+    const sortedData = this.state.data;
+    const sortKey = this.state.sortKey;
+    let sortDirection = this.state.sortDirection;
+
+    sortedData.sort((a, b) => {
+      if (a[sortKey] < b[sortKey]) {
+        return sortDirection === 'ascending' ? -1 : 1;
+      }
+      if (a[sortKey] > b[sortKey]) {
+        return sortDirection === 'ascending' ? 1 : -1;
+      }
+      return 0;
+    });
+
+    this.setState({sortDirection: sortDirection})
+  }
+
+  requestSort(key) {
+    this.setState({sortKey: key})
+
+    const sortedData = this.state.data;
+    const sortKey = this.state.sortKey;
+    let sortDirection = this.state.sortDirection;
+
+    sortDirection = 'ascending';    
+    if (sortKey === key && sortDirection === 'ascending') {
+      sortDirection = 'descending';
+    }
+    this.setState({ sortKey, sortDirection });
+  }
+  //____________________________________>>
+
   //DO NOT WORK ON 'id' and 'adress.state'
   onSort(sortKey) {
     const data = this.state.data;
     data.sort((a, b) => a[sortKey].localeCompare(b[sortKey]))
     this.setState({data})
-  }
-
-  //testing Sortable Table
-  //https://www.smashingmagazine.com/2020/03/sortable-tables-react/
-  sortableTable(sortedField) {
-    this.setState({sortedField})
-    let sortedData = this.state.data;
-      if (sortedField !== null) {
-        sortedData.sort((a, b) => {
-          if (a[sortConfig.key] < b[sortConfig.key]) {
-            return sortConfig.direction === 'ascending' ? -1 : 1;
-          }
-          if (a[sortConfig.key] > b[sortConfig.key]) {
-            return sortConfig.direction === 'ascending' ? 1 : -1;
-          }
-          return 0;
-      });
-    }
-  }
-
-  requestSort(key) {
-    let direction = 'ascending';
-    
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
   }
    
   render() {

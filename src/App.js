@@ -8,6 +8,7 @@ class App extends React.Component {
       isLoading: false,
       data: [],
       sortedField: null,
+      sortConfig: null,
     };
   }
 
@@ -48,7 +49,7 @@ class App extends React.Component {
       <tr>
         <th onClick={() => this.sortableTable('id')}>id</th>
         <th onClick={() => this.sortableTable('firstName')}>First Name</th>
-        <th onClick={() => this.onSort('lastName')}>Last Name</th>
+        <th onClick={() => this.requestSort('lastName')}>Last Name</th>
         <th onClick={() => this.onSort('email')}>Email</th>
         <th onClick={() => this.onSort('phone')}>Phone</th>
         <th onClick={() => this.sortableTable('adress.state')}>State</th>
@@ -70,49 +71,25 @@ class App extends React.Component {
     let sortedData = this.state.data;
       if (sortedField !== null) {
         sortedData.sort((a, b) => {
-          if (a[sortedField] < b[sortedField]) {
-            return -1;
+          if (a[sortConfig.key] < b[sortConfig.key]) {
+            return sortConfig.direction === 'ascending' ? -1 : 1;
           }
-          if (a[sortedField] > b[sortedField]) {
-            return 1;
+          if (a[sortConfig.key] > b[sortConfig.key]) {
+            return sortConfig.direction === 'ascending' ? 1 : -1;
           }
           return 0;
       });
     }
   }
 
-  //the function does not work properly
-    //FIX: reading 'state' - Cannot read properties of undefined (reading 'localeCompare');
-    //FIX: reading 'id' - a[sortKey].localeCompare is not a function;
-
-  // onSort = (column) => (e) => {
-  //   const direction = this.state.sort.column ? 
-  //     (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
-  //   const sortedData = this.state.data.sort((a, b) => {
-  //       if (column) {
-  //         if (a < b) {
-  //           return -1;
-  //         }
-  //         if (a > b) {
-  //           return 1;
-  //         }
-  //         return 0;
-  //       }
-  //   });
-
-  //   if (direction === 'desc') {
-  //     sortedData.reverse();
-  //   }
-
-  //   this.setState({
-  //     data: sortedData,
-  //     sort: {
-  //       column,
-  //       direction,
-  //     }
-  //   });
-  // };
-
+  requestSort(key) {
+    let direction = 'ascending';
+    
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  }
    
   render() {
     return (

@@ -29,7 +29,7 @@ class App extends React.Component {
 
   renderTableData() {
     let newdata = this.state.data;
-    return newdata.map((user, index) => { // TODO: fix 'two children with the same key'
+    return newdata.map((user, index) => {
       const { id, firstName, lastName, email, phone, adress } = user
       return (
         <tr key={index}>
@@ -57,17 +57,10 @@ class App extends React.Component {
     )
   }
 
-  //testing Sortable Table
-  //https://www.smashingmagazine.com/2020/03/sortable-tables-react/
-
-  //<<______________
-  //TODO:
-  //    ? - make sortableTable function able to work with sortDirection
-  //        (it have to sort data using direction and then change it to opposite)
-  // 
-  //    1 - how to set state in correct way ?
-  //    2 - create two separate func: 1) sort data; 2)request sort;
-  //    3 - refactor class to functional component
+  //Sortable Table: https://www.smashingmagazine.com/2020/03/sortable-tables-react/
+  
+  // TODO: - change setState to work synchronously
+  //       - create two separate func: 1)sort data; 2)request sort;
 
   sortableTable() { //get sortKey and sortData
     const sortedData = this.state.data;
@@ -86,8 +79,8 @@ class App extends React.Component {
       });
     }
 
-    this.setState({sortDirection: sortDirection}) // change it to correct way
-    this.setState({data: sortedData}) // change it to correct way
+    this.setState({sortDirection: sortDirection})
+    this.setState({data: sortedData})
   }
 
   requestSort(key) { //set sortKey and change sortDirection
@@ -98,13 +91,12 @@ class App extends React.Component {
     if (sortKey === key && sortDirection === 'ascending') {
       direction = 'descending';
     }
-    this.setState({sortDirection: direction}) // change it to correct way
-    this.setState({sortKey: key}) // change it to correct way
+    this.setState({sortDirection: direction})
+    this.setState({sortKey: key})
 
     console.log( `requestSort 1: this.key: ${ this.state.sortKey }` );
     console.log( `requestSort 1: this.direct: ${ this.state.sortDirection }` );
   }
-  //____________________________________>>
 
   //DO NOT WORK WITH 'id' and 'adress.state'
   onSort(key) {
@@ -126,7 +118,5 @@ class App extends React.Component {
     )
   }
 }
-
-// https://itrex-react-lab-files.s3.eu-central-1.amazonaws.com/react-test-api.json
 
 export default App;

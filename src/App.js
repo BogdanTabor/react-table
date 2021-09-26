@@ -29,10 +29,10 @@ class App extends React.Component {
 
   renderTableData() {
     let newdata = this.state.data;
-    return newdata.map(user => { // TODO: fix 'two children with the same key'
+    return newdata.map((user, index) => { // TODO: fix 'two children with the same key'
       const { id, firstName, lastName, email, phone, adress } = user
       return (
-        <tr>
+        <tr key={index}>
           <td>{id}</td>
           <td>{firstName}</td>
           <td>{lastName}</td>

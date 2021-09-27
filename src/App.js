@@ -1,10 +1,29 @@
+/*
+
+TODO:
+  ✓ render table data when page first loaded;
+  ✓ ascending-descending sorting data by table header;
+    ✓ make setState work synchronously;
+    - add sorting marker;
+    - sortData must work with nested object (adress.state);
+  - global filtering with text field;
+    - ? use ReactTable ?
+  - additional info by clicking on a row;
+  - filter by state using Select-a;
+
+  LOCAL ISSUES
+  - refactor useHooks;
+
+  ADITIONAL FUNCTIONALITY
+  - client pagination: 20 items page by page;
+  
+  REQUIREMENTS
+  - independently implemented functionality;
+
+*/
+
 import React from "react";
 import "./index.css";
-
-// TODO: ✓ change setState to work synchronously;
-//       ✓ create two separate func: 1)sort data; 2)request sort;
-//       - make sortData work with complicated object (adress.state)
-//       - ? use components like didUpdate ?
 
 class App extends React.Component {
   constructor(props) {
@@ -12,8 +31,10 @@ class App extends React.Component {
     this.state = {
       isLoading: false,
       data: [],
+      filteredData: [],
       sortKey: null,
       isAscending: true,
+      searchInput: '',
     };
   }
 
@@ -112,17 +133,47 @@ class App extends React.Component {
       data: sortedData,
     })
   }
+
+  handleSearchInput = event => {
+  this.setState({ searchInput: event.target.value }, () => {
+    this.globalSearch();
+  });
+  };
+
+//LOOK: https://stackoverflow.com/questions/56833671/implementing-a-global-search-filter-across-react-table-react-react-table/56833892
+  
+  globalSearch = () => {
+    let { searchInput, data } = this.state;
+    let filteredData = data.filter(value => {
+      return (
+        value.firstName.toLowerCase().includes(searchInput.toLowerCase())
+      )
+    })
+    this.setState({ filteredData })
+  }
    
   render() {
+    let { data, searchInput } = this.state;
     return (
-      <table>
-        <thead>
-          {this.renderTableHeader()}
-        </thead>
-        <tbody>
-          {this.renderTableData()}
-        </tbody>
-      </table>
+      <div>
+        <br />
+        <input 
+          value={searchInput || ''}
+          onChange={this.handleSearchInput}
+          label="Search"
+        />
+        <br />
+        <br />
+
+        <table>
+          <thead>
+            {this.renderTableHeader()}
+          </thead>
+          <tbody>
+            {this.renderTableData()}
+          </tbody>
+        </table>     
+      </div>
     )
   }
 }

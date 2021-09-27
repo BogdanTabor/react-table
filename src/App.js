@@ -13,7 +13,7 @@ class App extends React.Component {
       isLoading: false,
       data: [],
       sortKey: null,
-      sortDirection: 'ascending',
+      isAscending: true,
     };
   }
 
@@ -32,9 +32,6 @@ class App extends React.Component {
   }
 
   renderTableData() {
-    console.log(`Data: Key (${this.state.sortKey})`);
-    console.log(`Data: Direction (${this.state.sortDirection})`);
-
     let newdata = this.state.data;
     return newdata.map((user, index) => {
       const { id, firstName, lastName, email, phone, adress } = user
@@ -52,13 +49,10 @@ class App extends React.Component {
   }
 
   renderTableHeader() {
-    console.log(`Header: Key (${this.state.sortKey})`);
-    console.log(`Header: Direction (${this.state.sortDirection})`);
-
     return (
       <tr>
         <th onClick={() => this.requestSort('id')}>id</th>
-        <th onClick={() => this.onSort('firstName')}>First Name</th>
+        <th onClick={() => this.requestSort('firstName')}>First Name</th>
         <th onClick={() => this.requestSort('lastName')}>Last Name</th>
         <th onClick={() => this.requestSort('email')}>Email</th>
         <th onClick={() => this.requestSort('phone')}>Phone</th>
@@ -67,31 +61,15 @@ class App extends React.Component {
     )
   }
 
-  //Sortable Table: https://www.smashingmagazine.com/2020/03/sortable-tables-react/
-
-  requestSort(key) { //set sortKey and change sortDirection
-    const sortDirection = this.state.sortDirection;
-    if (sortDirection === 'ascending') {
-      this.setState({
-        sortKey: key,
-      }, () => {
-        console.log( `requestSort1: Key (${this.state.sortKey})`);
-        console.log( `requestSort1: Direction (${this.state.sortDirection})`);
-        this.sortData();
-        });
-      this.setState({
-        sortDirection: 'descending',
-      })
+  requestSort(key) { //set sortKey and change isAscending
+    const isAscending = this.state.isAscending;
+    if (isAscending) {
+      this.setState({ sortKey: key }, () => { this.sortData() });
+      this.setState({ isAscending: false })
     } else {
+      this.setState({ sortKey: key }, () => { this.sortData() });
       this.setState({
-        sortKey: key,
-      }, () => {
-        console.log( `requestSort2: Key (${this.state.sortKey})`);
-        console.log( `requestSort2: Direction (${this.state.sortDirection})`);
-        this.sortData();
-        });
-      this.setState({
-        sortDirection: 'ascending',
+        isAscending: true,
       })
     }
   }
@@ -99,43 +77,33 @@ class App extends React.Component {
   sortData() { //get sortKey and sort data
     const sortedData = this.state.data;
     let key = this.state.sortKey;
-    let direction = this.state.sortDirection;
+    let direction = this.state.isAscending;
 
-    console.log(`sortData: Key (${this.state.sortKey})`);
-    console.log(`sortData: Direction (${this.state.sortDirection})`);
-
-    if (direction === 'descending') {
+    if (direction) {
       sortedData.sort((a, b) => {
         if (a[key] < b[key]) {
-          return direction === 'ascending' ? 1 : -1;
+          return direction === true ? 1 : -1;
         }
         if (a[key] > b[key]) {
-          return direction === 'ascending' ? -1 : 1;
+          return direction === true ? -1 : 1;
         }
         return 0;
       })
     } else {
       sortedData.sort((a, b) => {
         if (a[key] > b[key]) {
-          return direction === 'descending' ? 1 : -1;
+          return direction === false ? 1 : -1;
         }
         if (a[key] < b[key]) {
-          return direction === 'descending' ? -1 : 1;
+          return direction === false ? -1 : 1;
         }
         return 0;
       })
     }
     this.setState({
-      sortDirection: direction,
+      isAscending: direction,
       data: sortedData,
     })
-  }
-
-  //DO NOT WORK WITH 'id' and 'adress.state'
-  onSort(key) {
-    const data = this.state.data;
-    data.sort((a, b) => a[key].localeCompare(b[key]))
-    this.setState({data})
   }
    
   render() {

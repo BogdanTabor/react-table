@@ -61,16 +61,23 @@ class App extends React.Component {
     )
   }
 
+  //LOOK https://stackoverflow.com/questions/44402937/how-to-make-columns-in-table-sortable-in-both-ways-using-reactjs?noredirect=1&lq=1
   requestSort(key) { //set sortKey and change isAscending
     const isAscending = this.state.isAscending;
     if (isAscending) {
-      this.setState({ sortKey: key }, () => { this.sortData() });
-      this.setState({ isAscending: false })
-    } else {
-      this.setState({ sortKey: key }, () => { this.sortData() });
       this.setState({
+        sortKey: key,
+        isAscending: false,
+      }, () => {
+        this.sortData()
+      });
+    } else {
+      this.setState({
+        sortKey: key,
         isAscending: true,
-      })
+      }, () => {
+        this.sortData()
+      });
     }
   }
 

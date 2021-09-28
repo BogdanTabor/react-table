@@ -6,6 +6,7 @@ TODO:
     ✓ make setState work synchronously;
     - add sorting marker;
     - sortData must work with nested object (adress.state);
+      - https://www.freecodecamp.org/news/iterate-through-nested-object-in-react-js/;
   - global filtering with text field;
     - ? use ReactTable ?
   - additional info by clicking on a row;

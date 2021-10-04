@@ -13,7 +13,7 @@ TODO:
   - filter by state using Select-a;
 
   LOCAL ISSUES
-  - refactor useHooks;
+  - refactor to functional component;
 
   ADITIONAL FUNCTIONALITY
   - client pagination: 20 items page by page;

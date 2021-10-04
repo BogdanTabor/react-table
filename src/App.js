@@ -26,6 +26,10 @@ TODO:
 import React from "react";
 import "./index.css";
 
+function App(props) {
+  
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);

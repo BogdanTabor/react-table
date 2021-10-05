@@ -23,42 +23,36 @@ TODO:
 
 */
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 
 function App(props) {
-  
-}
+  const [ data, setData ] = useState([])
+  const [ isLoading, setIsLoading ] = useState(false)
+  // const [ filteredData, setFilteredData ] = useState([])
+  const [ sortKey, setSortKey ] = useState(null)
+  const [ isAscending, setIsAscending ] = useState(true)
+  // const [ searchInput, setSearchInput ] = useState('')
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false,
-      data: [],
-      filteredData: [],
-      sortKey: null,
-      isAscending: true,
-      searchInput: '',
-    };
-  }
-
-  componentDidMount() {
+  const loadData = async () => {
     const apiUrl = 'https://itrex-react-lab-files.s3.eu-central-1.amazonaws.com/react-test-api.json';
-    this.setState({isLoading: true});
-
-    fetch(apiUrl)
+    setIsLoading(true)
+    try {
+      const response = await fetch(apiUrl)
       .then((response) => response.json())
-      .then((result) => {        
-        this.setState({
-          isLoading: false,
-          data: result,
-        })
-      })
+        setData(response)
+        setIsLoading(false)
+    } catch(e) {
+      setIsLoading(false)
+    }
   }
+    
+  useEffect(() => { 
+    loadData()
+  }, [])
 
-  renderTableData() {
-    let newdata = this.state.data;
+  const renderTableData = () => {
+    let newdata = data
     return newdata.map((user, index) => {
       const { id, firstName, lastName, email, phone, adress } = user
       return (
@@ -74,43 +68,37 @@ class App extends React.Component {
     })
   }
 
-  renderTableHeader() {
+  const renderTableHeader = () => {
     return (
       <tr>
-        <th onClick={() => this.requestSort('id')}>id</th>
-        <th onClick={() => this.requestSort('firstName')}>First Name</th>
-        <th onClick={() => this.requestSort('lastName')}>Last Name</th>
-        <th onClick={() => this.requestSort('email')}>Email</th>
-        <th onClick={() => this.requestSort('phone')}>Phone</th>
-        <th onClick={() => this.requestSort('adress.state')}>State</th>
+        <th onClick={() => requestSort('id')}>id</th>
+        <th onClick={() => requestSort('firstName')}>First Name</th>
+        <th onClick={() => requestSort('lastName')}>Last Name</th>
+        <th onClick={() => requestSort('email')}>Email</th>
+        <th onClick={() => requestSort('phone')}>Phone</th>
+        <th onClick={() => requestSort('adress.state')}>State</th>
       </tr>
     )
   }
 
   //LOOK https://stackoverflow.com/questions/44402937/how-to-make-columns-in-table-sortable-in-both-ways-using-reactjs?noredirect=1&lq=1
-  requestSort(key) { //set sortKey and change isAscending
-    const isAscending = this.state.isAscending;
-    if (isAscending) {
-      this.setState({
-        sortKey: key,
-        isAscending: false,
-      }, () => {
-        this.sortData()
-      });
+  const requestSort = key => { //set sortKey and change isAscending
+    const ascending = isAscending
+    if (ascending) {
+      setSortKey(key)
+      setIsAscending(false)
+      sortData()
     } else {
-      this.setState({
-        sortKey: key,
-        isAscending: true,
-      }, () => {
-        this.sortData()
-      });
+      setSortKey(key)
+      setIsAscending(true)
+      sortData()
     }
   }
 
-  sortData() { //get sortKey and sort data
-    const sortedData = this.state.data;
-    let key = this.state.sortKey;
-    let direction = this.state.isAscending;
+  const sortData = () => { //get sortKey and sort data
+    const sortedData = data
+    let key = sortKey
+    let direction = isAscending
 
     if (direction) {
       sortedData.sort((a, b) => {
@@ -120,7 +108,7 @@ class App extends React.Component {
         if (a[key] > b[key]) {
           return direction === true ? -1 : 1;
         }
-        return 0;
+        return 0
       })
     } else {
       sortedData.sort((a, b) => {
@@ -130,57 +118,52 @@ class App extends React.Component {
         if (a[key] < b[key]) {
           return direction === false ? -1 : 1;
         }
-        return 0;
+        return 0
       })
     }
-    this.setState({
-      isAscending: direction,
-      data: sortedData,
-    })
+    setIsAscending(direction)
+    setData(sortedData)
   }
 
-  handleSearchInput = event => {
-  this.setState({ searchInput: event.target.value }, () => {
-    this.globalSearch();
-  });
-  };
+  // const handleSearchInput = event => {
+  //   this.setState({ searchInput: event.target.value }, () => {
+  //     globalSearch()
+  //   })
+  // }
 
 //LOOK: https://stackoverflow.com/questions/56833671/implementing-a-global-search-filter-across-react-table-react-react-table/56833892
   
-  globalSearch = () => {
-    let { searchInput, data } = this.state;
-    let filteredData = data.filter(value => {
-      return (
-        value.firstName.toLowerCase().includes(searchInput.toLowerCase())
-      )
-    })
-    this.setState({ filteredData })
-  }
+  // const globalSearch = () => {
+  //   let { searchInput, data } = this.state
+  //   let filteredData = data.filter(value => {
+  //     return (
+  //       value.firstName.toLowerCase().includes(searchInput.toLowerCase())
+  //     )
+  //   })
+  //   this.setState({ filteredData })
+  // }
    
-  render() {
-    let { data, searchInput } = this.state;
-    return (
-      <div>
-        <br />
-        <input 
-          value={searchInput || ''}
-          onChange={this.handleSearchInput}
-          label="Search"
-        />
-        <br />
-        <br />
+  return (
+    <div>
+      <br />
+      <input 
+        // value={searchInput || ''}
+        // onChange={}
+        label="Search"
+      />
+      <br />
+      <br />
 
-        <table>
-          <thead>
-            {this.renderTableHeader()}
-          </thead>
-          <tbody>
-            {this.renderTableData()}
-          </tbody>
-        </table>     
-      </div>
-    )
-  }
+      <table>
+        <thead>
+          {renderTableHeader()}
+        </thead>
+        <tbody>
+          {renderTableData()}
+        </tbody>
+      </table>     
+    </div>
+  )
 }
 
 export default App;

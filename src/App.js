@@ -46,6 +46,7 @@ function App(props) {
       .then((response) => response.json())
         setData(response)
         setIsLoading(false)
+        console.log(response)
     } catch(e) {
       setIsLoading(false)
     }
@@ -67,15 +68,14 @@ function App(props) {
   const renderTableData = () => {
     let newdata = data
     return newdata.map((user, index) => {
-      const { id, firstName, lastName, email, phone, adress } = user
       return (
         <tr key={index}>
-          <td>{id}</td>
-          <td>{firstName}</td>
-          <td>{lastName}</td>
-          <td>{email}</td>
-          <td>{phone}</td>
-          <td>{adress.state}</td>
+          <td>{user.id}</td>
+          <td>{user.firstName}</td>
+          <td>{user.lastName}</td>
+          <td>{user.email}</td>
+          <td>{user.phone}</td>
+          <td>{user.adress.state}</td>
         </tr>
       )
     })

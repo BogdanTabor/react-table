@@ -4,6 +4,7 @@ TODO:
   ✓ render table data when page first loaded;
   ✓ ascending-descending sorting data by table header;
     ✓ make setState work synchronously;
+    ✓ refactor class to functional component;
     - add sorting marker;
     - sortData must work with nested object (adress.state);
       - https://www.freecodecamp.org/news/iterate-through-nested-object-in-react-js/;
@@ -13,7 +14,6 @@ TODO:
   - filter by state using Select-a;
 
   LOCAL ISSUES
-  - refactor to functional component;
 
   ADITIONAL FUNCTIONALITY
   - client pagination: 20 items page by page;
@@ -23,16 +23,20 @@ TODO:
 
 */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./index.css";
 
 function App(props) {
   const [ data, setData ] = useState([])
   const [ isLoading, setIsLoading ] = useState(false)
-  // const [ filteredData, setFilteredData ] = useState([])
   const [ sortKey, setSortKey ] = useState(null)
-  const [ isAscending, setIsAscending ] = useState(true)
+  const [ isAscending, setIsAscending ] = useState(null)
+  // const [ filteredData, setFilteredData ] = useState([])
   // const [ searchInput, setSearchInput ] = useState('')
+  
+  useEffect(() => { 
+    loadData()
+  }, [])
 
   const loadData = async () => {
     const apiUrl = 'https://itrex-react-lab-files.s3.eu-central-1.amazonaws.com/react-test-api.json';
@@ -46,11 +50,20 @@ function App(props) {
       setIsLoading(false)
     }
   }
-    
-  useEffect(() => { 
-    loadData()
-  }, [])
 
+  const renderTableHeader = () => {
+    return (
+      <tr>
+        <th onClick={() => requestSort('id')}>id</th>
+        <th onClick={() => requestSort('firstName')}>First Name</th>
+        <th onClick={() => requestSort('lastName')}>Last Name</th>
+        <th onClick={() => requestSort('email')}>Email</th>
+        <th onClick={() => requestSort('phone')}>Phone</th>
+        <th onClick={() => requestSort('adress.state')}>State</th>
+      </tr>
+    )
+  }
+  
   const renderTableData = () => {
     let newdata = data
     return newdata.map((user, index) => {
@@ -68,62 +81,30 @@ function App(props) {
     })
   }
 
-  const renderTableHeader = () => {
-    return (
-      <tr>
-        <th onClick={() => requestSort('id')}>id</th>
-        <th onClick={() => requestSort('firstName')}>First Name</th>
-        <th onClick={() => requestSort('lastName')}>Last Name</th>
-        <th onClick={() => requestSort('email')}>Email</th>
-        <th onClick={() => requestSort('phone')}>Phone</th>
-        <th onClick={() => requestSort('adress.state')}>State</th>
-      </tr>
-    )
-  }
-
-  //LOOK https://stackoverflow.com/questions/44402937/how-to-make-columns-in-table-sortable-in-both-ways-using-reactjs?noredirect=1&lq=1
-  const requestSort = key => { //set sortKey and change isAscending
-    const ascending = isAscending
-    if (ascending) {
-      setSortKey(key)
-      setIsAscending(false)
-      sortData()
-    } else {
-      setSortKey(key)
-      setIsAscending(true)
-      sortData()
+  const requestSort = key => {
+    let ascending = true
+    if (sortKey === key && isAscending === true) {
+      ascending = false
     }
+    setIsAscending(ascending)
+    setSortKey(key)
   }
 
-  const sortData = () => { //get sortKey and sort data
-    const sortedData = data
-    let key = sortKey
-    let direction = isAscending
-
-    if (direction) {
+  const sortData = useMemo(() => {
+    let sortedData = data
+    if (sortKey !== null && isAscending !== null) {
       sortedData.sort((a, b) => {
-        if (a[key] < b[key]) {
-          return direction === true ? 1 : -1;
+        if (a[sortKey] < b[sortKey]) {
+          return isAscending === true ? -1 : 1;
         }
-        if (a[key] > b[key]) {
-          return direction === true ? -1 : 1;
-        }
-        return 0
-      })
-    } else {
-      sortedData.sort((a, b) => {
-        if (a[key] > b[key]) {
-          return direction === false ? 1 : -1;
-        }
-        if (a[key] < b[key]) {
-          return direction === false ? -1 : 1;
+        if (a[sortKey] > b[sortKey]) {
+          return isAscending === true ? 1 : -1;
         }
         return 0
       })
     }
-    setIsAscending(direction)
-    setData(sortedData)
-  }
+    return sortedData
+  }, [ data, sortKey, isAscending ])
 
   // const handleSearchInput = event => {
   //   this.setState({ searchInput: event.target.value }, () => {
